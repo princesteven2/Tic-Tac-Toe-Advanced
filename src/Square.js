@@ -1,5 +1,8 @@
-const Square = ({ value, onClick, getLast }) => (
-  <button className={`square ${getLast(value)}`} onClick={onClick}>
+const Square = ({ value, onClick, getLast, ifCursor }) => (
+  <button
+    className={`square ${getLast(value)} ${ifCursor && 'cursor'}`}
+    onClick={onClick}
+  >
     {getLast(value) !== null && getLast(value).charAt(0)}
   </button>
 );

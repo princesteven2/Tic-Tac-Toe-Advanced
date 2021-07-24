@@ -173,15 +173,27 @@ const Game = () => {
     stepNumber: 0,
     xIsNext: true,
     showPick: false,
-    cursor: 0,
+    cursor: -1,
   });
 
   const showPick = (i) => {
     const history = state.history;
     const current = history[state.stepNumber];
-    if (calculateWinner(current.squares)) {
+    const squares = current.squares;
+    // if game is over
+    if (calculateWinner(squares)) {
       return;
     }
+    // if existing chess is largest and not yours
+    if (lastItem(squares[i]) !== null) {
+      if (
+        (state.xIsNext ? 'O' : 'X' === lastItem(squares[i]).charAt(0)) &&
+        lastItem(squares[i]).charAt(1) === '3'
+      ) {
+        return;
+      }
+    }
+
     setState({
       ...state,
       showPick: !state.showPick,
@@ -196,6 +208,7 @@ const Game = () => {
     const squares = current.squares.slice().map((i) => i.slice());
     const ochess = current.ochess.slice();
     const xchess = current.xchess.slice();
+    const targetSquare = squares[state.cursor];
 
     const oIndex = current.ochess.indexOf(chess);
     if (oIndex > -1) {
@@ -211,14 +224,14 @@ const Game = () => {
       return;
     }
     // if the chess is less then existing
-    if (lastItem(squares[state.cursor]) !== null) {
-      if (lastItem(squares[state.cursor]).charAt(1) >= chess.charAt(1)) {
+    if (lastItem(targetSquare) !== null) {
+      if (lastItem(targetSquare).charAt(1) >= chess.charAt(1)) {
         return;
       }
     }
-    //squares[state.cursor] = state.xIsNext ? 'X' : 'O';
-    //squares[state.cursor] = chess;
-    squares[state.cursor][squares[state.cursor].indexOf(null)] = chess;
+    //targetSquare = state.xIsNext ? 'X' : 'O';
+    //targetSquare = chess;
+    targetSquare[targetSquare.indexOf(null)] = chess;
     //console.log(state);
     setState({
       ...state,
@@ -232,6 +245,7 @@ const Game = () => {
       stepNumber: history.length,
       xIsNext: !state.xIsNext,
       showPick: false,
+      cursor: -1,
     });
   };
 
@@ -306,6 +320,7 @@ const Game = () => {
           squares={current.squares}
           onClick={(i) => showPick(i)}
           getLast={(arr) => lastItem(arr)}
+          cursor={state.cursor}
         />
         {state.showPick && (
           <Pick

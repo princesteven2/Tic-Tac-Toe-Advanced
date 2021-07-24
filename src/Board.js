@@ -1,12 +1,13 @@
 import Square from './Square';
 
-const Board = ({ squares, onClick, getLast }) => {
+const Board = ({ squares, onClick, getLast, cursor }) => {
   const renderSquare = (i) => {
     return (
       <Square
         value={squares[i]}
         onClick={() => onClick(i)}
         getLast={(arr) => getLast(arr)}
+        ifCursor={cursor === i}
       />
     );
   };

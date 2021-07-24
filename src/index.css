@@ -50,6 +50,14 @@ ul {
   margin-left: 20px;
 }
 
+.cursor {
+  background-color: lightblue;
+}
+
+.test {
+  color: red;
+}
+
 .pickpool {
   display: flex;
 }
