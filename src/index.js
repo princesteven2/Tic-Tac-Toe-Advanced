@@ -176,12 +176,15 @@ const Game = () => {
     cursor: -1,
   });
 
+  const [message, setMessage] = useState('');
+
   const showPick = (i) => {
     const history = state.history;
     const current = history[state.stepNumber];
     const squares = current.squares;
     // if game is over
     if (calculateWinner(squares)) {
+      setMessage('The game has been end man.');
       return;
     }
     // if existing chess is largest and not yours
@@ -196,9 +199,10 @@ const Game = () => {
 
     setState({
       ...state,
-      showPick: !state.showPick,
-      cursor: i,
+      showPick: state.cursor === i ? !state.showPick : true,
+      cursor: state.cursor === i ? -1 : i,
     });
+    setMessage('');
   };
 
   const putChess = (chess) => {
@@ -221,11 +225,13 @@ const Game = () => {
     }
     // if game is over
     if (calculateWinner(squares)) {
+      setMessage('The game has been end man.');
       return;
     }
     // if the chess is less then existing
     if (lastItem(targetSquare) !== null) {
       if (lastItem(targetSquare).charAt(1) >= chess.charAt(1)) {
+        setMessage('You must put a larger piece.');
         return;
       }
     }
@@ -247,6 +253,7 @@ const Game = () => {
       showPick: false,
       cursor: -1,
     });
+    setMessage('');
   };
 
   const calculateWinner = (squares) => {
@@ -328,6 +335,7 @@ const Game = () => {
             onClick={putChess}
           />
         )}
+        <div>{message}</div>
       </div>
 
       <div className='game-info'>
