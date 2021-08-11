@@ -173,6 +173,7 @@ const Game = () => {
     stepNumber: 0,
     xIsNext: true,
     showPick: false,
+    inMove: false,
     cursor: -1,
   });
 
@@ -188,7 +189,7 @@ const Game = () => {
       return;
     }
     // if existing chess is largest and not yours
-    if (lastItem(squares[i]) !== null) {
+    if (lastItem(squares[i])) {
       if (
         (state.xIsNext ? 'O' : 'X' === lastItem(squares[i]).charAt(0)) &&
         lastItem(squares[i]).charAt(1) === '3'
@@ -197,16 +198,57 @@ const Game = () => {
       }
     }
 
+    var showPick, cursor, inMove;
+
+    // Moving cursor
+    if (state.cursor !== i) {
+      showPick = true;
+      cursor = i;
+      inMove = false;
+      // Same cursor
+    } else {
+      // if inMove
+      if (state.inMove) {
+        showPick = false;
+      } else {
+        showPick = !state.showPick;
+      }
+      // if showPick
+      if (state.showPick && lastItem(squares[i])) {
+        cursor = i;
+        inMove = true;
+      } else {
+        cursor = -1;
+        inMove = false;
+      }
+    }
     setState({
       ...state,
-      showPick: state.cursor === i ? !state.showPick : true,
-      cursor: state.cursor === i ? -1 : i,
+      showPick: showPick,
+      cursor: cursor,
+      inMove: inMove,
     });
+
+    //////////// TODO: Movement
+
+    // setState({
+    //   ...state,
+    //   showPick:
+    //     state.cursor === i ? (state.inMove ? false : !state.showPick) : true,
+    //   cursor:
+    //     state.cursor === i && !(state.showPick && lastItem(squares[i]))
+    //       ? -1
+    //       : i,
+    //   inMove:
+    //     state.cursor === i && state.showPick && lastItem(squares[i])
+    //       ? true
+    //       : false,
+    // });
     setMessage('');
   };
 
   const putChess = (chess) => {
-    console.log(state);
+    //console.log(state);
     const history = state.history.slice(0, state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice().map((i) => i.slice());
@@ -229,16 +271,13 @@ const Game = () => {
       return;
     }
     // if the chess is less then existing
-    if (lastItem(targetSquare) !== null) {
+    if (lastItem(targetSquare)) {
       if (lastItem(targetSquare).charAt(1) >= chess.charAt(1)) {
         setMessage('You must put a larger piece.');
         return;
       }
     }
-    //targetSquare = state.xIsNext ? 'X' : 'O';
-    //targetSquare = chess;
     targetSquare[targetSquare.indexOf(null)] = chess;
-    //console.log(state);
     setState({
       ...state,
       history: history.concat([
@@ -297,6 +336,9 @@ const Game = () => {
       ...state,
       stepNumber: step,
       xIsNext: step % 2 === 0,
+      cursor: -1,
+      showPick: false,
+      inMove: false,
     });
   };
 
@@ -328,6 +370,7 @@ const Game = () => {
           onClick={(i) => showPick(i)}
           getLast={(arr) => lastItem(arr)}
           cursor={state.cursor}
+          inMove={state.inMove}
         />
         {state.showPick && (
           <Pick

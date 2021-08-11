@@ -1,13 +1,15 @@
 import Square from './Square';
 
-const Board = ({ squares, onClick, getLast, cursor }) => {
+const Board = ({ squares, onClick, getLast, cursor, inMove }) => {
   const renderSquare = (i) => {
+    //console.log(inMove);
     return (
       <Square
         value={squares[i]}
         onClick={() => onClick(i)}
         getLast={(arr) => getLast(arr)}
         ifCursor={cursor === i}
+        ifInMove={inMove && cursor === i}
       />
     );
   };

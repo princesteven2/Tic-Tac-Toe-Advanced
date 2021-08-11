@@ -54,6 +54,11 @@ ul {
   background-color: lightblue;
 }
 
+.inmove {
+  /* background-color: rgb(100, 200, 225); */
+  background-color: lightcoral;
+}
+
 .test {
   color: red;
 }
